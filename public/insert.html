@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Insert note</title>
+</head>
+<body>
+
+    <label>ime:</label>
+    <input type="text" id='ime' name='ime' /> <br/> 
+    <label>prezime:</label>
+    <input type="text" id='prezime' name='prezime' /> <br/> 
+    <label>brInd:</label>
+    <input type="text" id='brInd' name='brInd' /> 
+
+    <br/>
+    <br/>
+
+    <label>naziv:</label>
+    <input type="text" id='naziv' name='naziv' /> <br/> 
+    <label>ocjena:</label>
+    <input type="text" id='ocjena' name='ocjena' /> 
+
+    <button id='btnIspita'>Unesi ispite</button>
+    <br/>
+    <br/>
+    <button id='btnUnos'>Unesi sve</button>
+
+    <br/>
+    <br/><br/>
+    <label>delete:</label>
+    <input type="text" id='delete' name='delete' /> <br/> 
+    <button id='btnDelete'>Delete</button>
+
+    <script>
+
+        let btnIspita = document.getElementById('btnIspita');
+        btnIspita.addEventListener("click", unesiIspite);
+
+        let polozeniIspiti = [];
+
+        function unesiIspite(event){
+            let naziv = document.getElementById('naziv').value;
+            let ocjena = document.getElementById('ocjena').value;
+            let ispiti = {naziv, ocjena};
+            polozeniIspiti.push(ispiti);
+        };
+
+        let btnUnos = document.getElementById('btnUnos');
+        btnUnos.addEventListener("click", unesi);
+
+        function unesi(event){
+            let ime = document.getElementById('ime').value;
+            let prezime = document.getElementById('prezime').value;
+            let brIndexa = document.getElementById('brInd').value;
+
+            /*if (ime === '' || prezime === ''){
+                alert('Unesi sve podatke!');
+                return;
+            }*/
+
+
+            let data = {ime, prezime, brIndexa, polozeniIspiti};
+
+            let request = new XMLHttpRequest();
+            request.open('POST', '/studentss');
+            request.setRequestHeader('Content-type', 'application/json');
+            request.onreadystatechange = function(){
+                if (request.readyState == 4 && request.status == 200){
+                    console.log("Odgovor: ", request.responseText);
+                }
+            }
+
+            request.send(JSON.stringify(data));
+            polozeniIspiti = [];
+        }
+
+        let btnDelete = document.getElementById('btnDelete');
+        btnDelete.addEventListener("click", izbrisi);
+
+        function izbrisi(event){
+            let _id = document.getElementById('delete').value;
+
+            let data = {_id};
+
+            let request = new XMLHttpRequest();
+            request.open('DELETE', '/studentss/:studentId');
+            request.setRequestHeader('Content-type', 'application/json');
+            request.onreadystatechange = function(){
+                if (request.readyState == 4 && request.status == 200){
+                    console.log("Odgovor: ", request.responseText);
+                }
+            }
+
+            request.send(JSON.stringify(data));
+        }
+    </script>
+</body>
+</html>
